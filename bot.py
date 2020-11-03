@@ -5,7 +5,7 @@ import discord
 # --- THINGS TO CHANGE --- #
 # 1. AUTHORIZE BOT TO SERVER - https://discordapi.com/permissions.html#52224 - enter 760273969688739882 for 'Client ID' # -- ! you need 'Manage Server' permissions
 # 2. CHANGE CHANNEL ID - get channel id by going to server, right-clicking on desired text channel, and clicking 'COPY ID' -- ! requires you to have developer mode on
-CHANNEL_ID = 773210097291362307 # <-- change this (don't get it confused with 'server id' -- you want 'text channel id')
+CHANNEL_ID = 0 # <-- change this (don't get it confused with 'server id' -- you want 'text channel id')
 # 3. Ready to use! Get at least 3 other players to start playing!
 # --- END --- #
 
@@ -13,6 +13,7 @@ CHANNEL_ID = 773210097291362307 # <-- change this (don't get it confused with 's
 TOKEN = 'NzYwMjczOTY5Njg4NzM5ODgy.X3JqTw.NXzE02TA6fevX6wsuPTWQ8apgJk'
 
 # // TODO
+# make connectable by multiple servers
 # document everything.. add more comments... submit online
 
 def update_players(): # grabs list of non-bot users
@@ -42,6 +43,10 @@ client = discord.Client()
 @client.event
 async def on_ready():
     global CHANNEL_ID
+    # setup not done yet
+    if (CHANNEL_ID == 0):
+        return
+
     channel = client.get_channel(CHANNEL_ID)
     await channel.send("🎀***__𝕯𝖎𝖘𝖈𝖔𝖗𝖉 𝕻𝖎𝖈𝖙𝖚𝖗𝖊 𝕽𝖔𝖚𝖑𝖊𝖙𝖙𝖊__***🎀")
     await channel.send("★·.·´¯`·.·★----------------★·.·`¯´·.·★")
@@ -56,10 +61,10 @@ async def on_ready():
 # when bot gets a message...
 @client.event
 async def on_message(message):
+    global CHANNEL_ID
     if not message.guild: # if private dm
         if len(message.attachments) > 0: # if dm is an image and not a message         
             # put received images into an array
-            global CHANNEL_ID
             channel = client.get_channel(CHANNEL_ID)
             global images
             if (len(images) == 0):
@@ -75,7 +80,29 @@ async def on_message(message):
         global current_guesser
         global correct_guess
         global skip_votes
+
+        ## channel-change related
+        if (message.content == "!setup"):
+            CHANNEL_ID = message.channel.id
+            channel = client.get_channel(CHANNEL_ID)
+            await channel.send("Setup successful!")
+            return
+        
         channel = client.get_channel(CHANNEL_ID)
+
+        ## after setup...
+        if (message.content == "Setup successful!" and message.author.id == client.user.id):
+            await channel.send("🎀***__𝕯𝖎𝖘𝖈𝖔𝖗𝖉 𝕻𝖎𝖈𝖙𝖚𝖗𝖊 𝕽𝖔𝖚𝖑𝖊𝖙𝖙𝖊__***🎀")
+            await channel.send("★·.·´¯`·.·★----------------★·.·`¯´·.·★")
+            await channel.send("DM the discord bot pictures... it'll choose one and you have to guess whose it is! :face_with_monocle:")
+            await channel.send("After everyone has sent their pictures in, type in !startroulette :exclamation:")
+            await channel.send("First to guess it wins! :money_with_wings:")
+            await channel.send("To **start a new round**, type in *!startroulette*")
+            await channel.send("To **reset the pool of pictures**, type in *!newroulette*")
+            await channel.send("To **quit this game**, type in *!endroulette*")
+            await channel.send("★·.·´¯`·.·★----------------★·.·`¯´·.·★")
+
+        ## game-related
         # make sure message comes from right channel
         if (message.channel.id == CHANNEL_ID):
             if message.content.startswith("!startroulette"):
