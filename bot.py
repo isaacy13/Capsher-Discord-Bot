@@ -2,19 +2,12 @@
 import random
 import discord
 
-# --- THINGS TO CHANGE --- #
+# --- NOTES --- #
 # 1. AUTHORIZE BOT TO SERVER - https://discordapi.com/permissions.html#52224 - enter 760273969688739882 for 'Client ID' # -- ! you need 'Manage Server' permissions
-# 2. CHANGE CHANNEL ID - get channel id by going to server, right-clicking on desired text channel, and clicking 'COPY ID' -- ! requires you to have developer mode on
-CHANNEL_ID = 0 # <-- change this (don't get it confused with 'server id' -- you want 'text channel id')
-# 3. Ready to use! Get at least 3 other players to start playing!
 # --- END --- #
 
-
+CHANNEL_ID = 0
 TOKEN = 'NzYwMjczOTY5Njg4NzM5ODgy.X3JqTw.NXzE02TA6fevX6wsuPTWQ8apgJk'
-
-# // TODO
-# make connectable by multiple servers
-# document everything.. add more comments... submit online
 
 def update_players(): # grabs list of non-bot users
     player_list = []
@@ -92,6 +85,7 @@ async def on_message(message):
 
         ## after setup...
         if (message.content == "Setup successful!" and message.author.id == client.user.id):
+            await channel.send("You can always use the !setup command in a different text channel to move the bot.")
             await channel.send("🎀***__𝕯𝖎𝖘𝖈𝖔𝖗𝖉 𝕻𝖎𝖈𝖙𝖚𝖗𝖊 𝕽𝖔𝖚𝖑𝖊𝖙𝖙𝖊__***🎀")
             await channel.send("★·.·´¯`·.·★----------------★·.·`¯´·.·★")
             await channel.send("DM the discord bot pictures... it'll choose one and you have to guess whose it is! :face_with_monocle:")
@@ -162,10 +156,12 @@ async def on_message(message):
                             return
 
                 skip_votes += 1
-                if (len(skip_votes_people) == 0):
+                if (type(skip_votes_people) == int):
                     skip_votes_people = int(message.author.id)
-                else:
+
+                elif (type(skip_votes_people) == list):
                     skip_votes_people.append(int(message.author.id)) # keep track of who has voted already
+
 
                 player_list = update_players()
 
@@ -186,6 +182,7 @@ async def on_message(message):
                     # prompt players to guess a person!
                     await channel.send(f"It's {current_guesser}'s turn to guess!")
                     await channel.send("Use the !{username_guess#xxxx} command to guess!")
+                    skip_votes_people = []
                     return
 
             # reset images
