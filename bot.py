@@ -3,11 +3,11 @@ import random
 import discord
 
 # --- NOTES --- #
-# 1. AUTHORIZE BOT TO SERVER - https://discordapi.com/permissions.html#52224 - enter 760273969688739882 for 'Client ID' # -- ! you need 'Manage Server' permissions
+# 1. AUTHORIZE BOT TO SERVER - https://discord.com/oauth2/authorize?client_id=760273969688739882&scope=bot&permissions=52224 # -- ! you need 'Manage Server' permissions
 # --- END --- #
 
 CHANNEL_ID = 0
-TOKEN = 'NzYwMjczOTY5Njg4NzM5ODgy.X3JqTw.NXzE02TA6fevX6wsuPTWQ8apgJk'
+TOKEN = 'NzYwMjczOTY5Njg4NzM5ODgy.X3JqTw.Gs1fpimFV6DN6j32sgCmYixe7RQ'
 
 def update_players(): # grabs list of non-bot users
     player_list = []
